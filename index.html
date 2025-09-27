@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Priyansh Dugar - Creative Web Developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ========================================
+        CSS STYLES
+        ========================================
+        */
+
+        /* "COSMIC LATTE" THEME */
+        :root {
+            --primary-color: #f3f4f6;
+            --secondary-color: #9ca3af;
+            --bg-color: #111827;
+            --accent-color: #8b5cf6;
+            --secondary-accent-color: #f59e0b;
+            --card-bg: #1f2937;
+            --border-color: #374151;
+        }
+
+        /* GENERAL STYLING */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* LOADING SCREEN */
+        #loading-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loader {
+            border: 5px solid var(--card-bg);
+            border-top: 5px solid var(--accent-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* WELCOME TOAST */
+        #welcome-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            z-index: 999;
+            opacity: 0;
+            transform: translateX(120%);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            background: rgba(31, 41, 55, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden; 
+        }
+
+        #welcome-toast::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border-radius: inherit;
+            background: radial-gradient(
+                250px circle at var(--mouse-x) var(--mouse-y),
+                rgba(139, 92, 246, 0.4),
+                transparent 80%
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+
+        #welcome-toast:hover::before {
+            opacity: 1;
+        }
+
+        #welcome-toast.visible {
+            opacity: 1;
+            transform: translateX(0%);
+        }
+
+        /* 3D CANVAS BACKGROUND */
+        #bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            outline: none;
+        }
+
+        /* HEADER & NAVIGATION */
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            z-index: 100;
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            transition: top 0.3s;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            letter-spacing: normal;
+            transition: letter-spacing 0.3s ease, text-shadow 0.3s ease;
+        }
+        
+        .logo:hover {
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px var(--secondary-accent-color);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* GLASS BUTTON STYLES FOR NAV LINKS */
+        nav a.glass-button {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease, transform 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        nav a.glass-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            border-radius: inherit;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: url(#container-glass) blur(5px);
+            box-shadow: 
+                inset 2px 2px 0.5px -2.5px rgba(255, 255, 255, 0.2),
+                inset -2px -2px 0.5px -2.5px rgba(255, 255, 255, 0.2),
+                inset 0 0 10px rgba(255, 255, 255, 0.08);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        nav a.glass-button:hover {
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        nav a.glass-button:hover::before {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                inset 2px 2px 0.5px -2.5px rgba(255, 255, 255, 0.3),
+                inset -2px -2px 0.5px -2.5px rgba(255, 255, 255, 0.3),
+                inset 0 0 12px rgba(139, 92, 246, 0.15);
+        }
+
+        /* HERO SECTION */
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 0 5%;
+        }
+        
+        .hero-title {
+            font-size: clamp(3rem, 12vw, 7rem);
+            font-weight: 800;
+            letter-spacing: 2px;
+            line-height: 1.1;
+            color: var(--primary-color);
+        }
+
+        .hero-title .word {
+            display: inline-block;
+            margin: 0 0.5rem;
+            overflow: hidden;
+        }
+        
+        .hero-title .char {
+            display: inline-block;
+            transform: translateY(115%);
+            transition: transform .5s cubic-bezier(.22, .61, .36, 1);
+        }
+
+        .hero-subtitle {
+            margin-top: 1.5rem;
+        }
+
+        .hero-subtitle span {
+            display: block;
+            font-size: clamp(1.1rem, 3.5vw, 1.8rem);
+            color: var(--secondary-color);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* SCROLL INDICATOR */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .indicator-line {
+            width: 2px;
+            height: 50px;
+            background: var(--secondary-color);
+            margin-top: 10px;
+            animation: pulse-line 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse-line {
+            0% { transform: scaleY(0.5); opacity: 0.5; }
+            50% { transform: scaleY(1); opacity: 1; }
+            100% { transform: scaleY(0.5); opacity: 0.5; }
+        }
+
+        /* CONTENT SECTIONS */
+        .content-section {
+            padding: 8rem 5%;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            min-height: 50vh;
+        }
+
+        .content-section h2 {
+            font-size: clamp(2.2rem, 5vw, 3rem);
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+        }
+
+        .content-section h2::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 4px;
+            background-color: var(--accent-color);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        /* ABOUT SECTION */
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .profile-pic {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 4px solid var(--accent-color);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+            object-fit: cover;
+            margin: 0 auto 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.05);
+        }
+
+        .about-content p {
+            flex: 1;
+            min-width: 320px;
+            line-height: 1.9;
+            font-size: 1.15rem;
+            text-align: left;
+            color: var(--secondary-color);
+            max-width: 600px;
+        }
+        .about-content p code {
+            font-family: monospace;
+            background-color: var(--card-bg);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            color: var(--accent-color);
+        }
+
+        /* PROJECTS SECTION */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            max-width: 900px; /* Adjust max-width for 2 items */
+            margin: 0 auto;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        .project-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover img {
+            transform: scale(1.03);
+        }
+
+        .project-card-content {
+            padding: 1.8rem;
+        }
+
+        .project-card h3 {
+            margin-bottom: 0.8rem;
+            color: var(--primary-color);
+            font-size: 1.4rem;
+        }
+
+        .project-card p {
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+            font-size: 1rem;
+        }
+
+        .project-links a {
+            color: var(--secondary-accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .project-links a:hover {
+            color: #fbbf24;
+        }
+        
+        .disabled-link {
+            color: var(--secondary-color);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* CONNECT WITH ME SECTION */
+        #contact-info {
+            padding: 8rem 5%;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .contact-link-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .contact-link-item i {
+            font-size: 3.5rem;
+            color: var(--accent-color);
+            margin-bottom: 0.8rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .contact-link-item:hover {
+            color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+
+        .contact-link-item:hover i {
+            color: #a78bfa; /* Lighter Violet on hover */
+            transform: scale(1.1);
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 2.5rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--secondary-color);
+            font-size: 0.95rem;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            nav { display: none; }
+            .hero-title { font-size: 4.5rem; }
+            .hero-subtitle span { font-size: 1.3rem; }
+            .about-content {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            .about-content p {
+                text-align: center;
+            }
+            .contact-links {
+                gap: 1.5rem;
+            }
+            .contact-link-item i {
+                font-size: 2.5rem;
+            }
+            #welcome-toast {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader"></div>
+    </div>
+
+    <canvas id="bg"></canvas>
+
+    <div id="welcome-toast">
+        <p>Oh, look. A visitor. I've tidied up the pixels just for you. 😉</p>
+    </div>
+
+    <header>
+        <a href="#hero" class="logo">Priyansh Dugar</a>
+        <nav>
+            <ul>
+                <li><a href="#hero" class="glass-button">Home</a></li>
+                <li><a href="#about" class="glass-button">About</a></li>
+                <li><a href="#projects" class="glass-button">Projects</a></li>
+                <li><a href="#contact-info" class="glass-button">Connect</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="hero-content">
+                <h1 class="hero-title" aria-label="Priyansh Dugar">
+                </h1>
+                <p class="hero-subtitle">
+                    <span id="subtitle-line-1">Creative Web Developer</span>
+                    <span id="subtitle-line-2">& UI/UX Designer</span>
+                </p>
+            </div>
+            <div class="scroll-indicator">
+                <span>SCROLL</span>
+                <div class="indicator-line"></div>
+            </div>
+        </section>
+
+        <section id="about" class="content-section">
+            <h2>About Me</h2>
+            <div class="about-content">
+                <img src="WhatsApp Image 2025-09-20 at 02.32.41_4a1ccc5d.jpg" alt="Priyansh Dugar" class="profile-pic">
+                <p>
+                    I’m Priyansh, a front-end developer and UI/UX designer on a mission to make the web a more beautiful and user-friendly place. Or, at the very least, a place with fewer 'rage-click' moments. 😫
+                    <br><br>
+                    Currently in my <strong>1st year</strong> of Computer Science at the prestigious <strong>Scaler School of Technology</strong>, I'm basically a code-compiling, pixel-perfecting machine in training. 🧠 I’m obsessed with the intersection of clean, elegant design and robust, scalable code.
+                    <br><br>
+                    When I'm not drowning in coursework, my brain is a chaotic playground of new tech and design principles. The goal is to craft digital experiences so seamless they seem to run on magic, logic, and <code>undefinied</code> amounts of coffee. ☕
+                    <br><br>
+                    If you’re looking for someone who’s passionate, constantly learning, and probably fixing a bug they created at 3 AM, we should talk. Let's build something amazing. 🚀
+                </p>
+            </div>
+        </section>
+
+        <section id="projects" class="content-section">
+            <h2>My Projects</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDEzfHx3ZWF0aGVyJTIwYXBwfGVufDB8fHx8MTY3NDA1MzkzNQ&ixlib=rb-4.0.3&q=80&w=870" alt="Weather App Project">
+                    <div class="project-card-content">
+                        <h3>WeatherWise</h3>
+                        <p>A beautifully crafted weather application that delivers real-time meteorological data with a stunning and interactive user interface. Powered by a robust weather API, this app provides precise forecasts, dynamic backgrounds that change with the conditions, and a seamless, intuitive user experience. A showcase of modern front-end techniques and API integration.</p>
+                        <div class="project-links">
+                            <a href="https://priyansh10ff.github.io/Personal/" target="_blank" rel="noopener noreferrer">Live Demo</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card">
+                     <img src="https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDV8fGVjb21tZXJjZXxlbnwwfHx8fDE2NzQwNTQxMTE&ixlib=rb-4.0.3&q=80&w=870" alt="E-commerce Website Project">
+                     <div class="project-card-content">
+                         <h3>E-Commerce Platform</h3>
+                         <p>A modern e-commerce website featuring a clean UI, product browsing, and a functional shopping cart. Built with a focus on responsive design and a seamless user experience from homepage to checkout.</p>
+                         <div class="project-links">
+                             <a href="https://eecommerce10.netlify.app/" target="_blank" rel="noopener noreferrer">Live Demo</a>
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact-info" class="content-section">
+            <h2>Connect with Me</h2>
+            <div class="contact-links">
+                <a href="mailto:priyansh10jan@gmail.com" class="contact-link-item" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email</span>
+                </a>
+                <a href="https://www.linkedin.com/in/priyansh-dugar-709333363/" class="contact-link-item" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-linkedin-in"></i>
+                    <span>LinkedIn</span>
+                </a>
+                <a href="https://github.com/Priyansh10ff" class="contact-link-item" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                </a>
+                <a href="https://www.instagram.com/priyanshdugar_10/" class="contact-link-item" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-instagram"></i>
+                    <span>Instagram</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Priyansh Dugar. All Rights Reserved.</p>
+    </footer>
+
+    <svg style="display: none;">
+        <defs>
+            <filter id="container-glass">
+                <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="1" seed="1" result="turbulence" />
+                <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
+                <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="10" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+                <feGaussianBlur in="displaced" stdDeviation="3" result="finalBlur" />
+            </filter>
+        </defs>
+    </svg>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <script type="module">
+        // --- LOADING SCREEN ---
+        const loadingScreen = document.getElementById('loading-screen');
+        const welcomeToast = document.getElementById('welcome-toast');
+        window.addEventListener('load', () => {
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+
+                // --- WELCOME TOAST LOGIC ---
+                setTimeout(() => {
+                    welcomeToast.classList.add('visible');
+                }, 1000);
+
+                setTimeout(() => {
+                    welcomeToast.classList.remove('visible');
+                }, 10000);
+
+            }, 500);
+        });
+
+        // --- GLOWING BORDER FOR TOAST ---
+        welcomeToast.addEventListener('mousemove', e => {
+            const rect = welcomeToast.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            welcomeToast.style.setProperty('--mouse-x', `${x}px`);
+            welcomeToast.style.setProperty('--mouse-y', `${y}px`);
+        });
+
+        // --- SPLIT-TEXT SETUP ---
+        const titleEl = document.querySelector('.hero-title');
+        const titleText = "PRIYANSH DUGAR";
+        titleEl.innerHTML = titleText.split(" ").map(word => 
+            `<span class="word">${word.split("").map(char => `<span class="char">${char}</span>`).join("")}</span>`
+        ).join(" ");
+
+
+        // --- THREE.JS SETUP ---
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x111827, 0.0015);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 100);
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.querySelector('#bg'),
+            antialias: true,
+            alpha: true,
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // --- LIGHTING ---
+        const pointLight = new THREE.PointLight(0xf59e0b, 1.5, 300); // Gold sun
+        pointLight.position.set(0, 0, 0);
+        scene.add(pointLight);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // Soft ambient light
+        scene.add(ambientLight);
+
+        // --- 3D MOTION GRAPHICS ---
+        let planets = [];
+        let asteroidField;
+
+        // Create a visible Sun object
+        const sunGeometry = new THREE.SphereGeometry(4, 32, 32);
+        const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xf59e0b, fog: false });
+        const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
+        scene.add(sunMesh);
+
+        // Create Revolving Planets
+        function createPlanets() {
+            const planetData = [
+                { size: 3, color: 0x8b5cf6, distance: 40, speed: 0.005 }, // Violet planet
+                { size: 5, color: 0x374151, distance: 70, speed: 0.003 }  // Blue-Gray planet
+            ];
+
+            planetData.forEach(data => {
+                const geometry = new THREE.SphereGeometry(data.size, 32, 32);
+                const material = new THREE.MeshStandardMaterial({
+                    color: data.color,
+                    roughness: 0.8,
+                    metalness: 0.2
+                });
+                const planet = new THREE.Mesh(geometry, material);
+
+                const pivot = new THREE.Object3D();
+                scene.add(pivot);
+                pivot.add(planet);
+                planet.position.x = data.distance;
+
+                planets.push({ planet, pivot, speed: data.speed, selfSpeed: Math.random() * 0.01 });
+            });
+        }
+        createPlanets();
+
+        // Create an Asteroid Field
+        function createAsteroidField() {
+            const asteroidCount = 500;
+            const geometry = new THREE.DodecahedronGeometry(1, 0);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x555555,
+                roughness: 0.9,
+                metalness: 0.1
+            });
+            asteroidField = new THREE.InstancedMesh(geometry, material, asteroidCount);
+
+            const dummy = new THREE.Object3D();
+            for (let i = 0; i < asteroidCount; i++) {
+                dummy.position.set(
+                    (Math.random() - 0.5) * 400,
+                    (Math.random() - 0.5) * 200,
+                    (Math.random() - 0.5) * 400
+                );
+                dummy.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+                const scale = Math.random() * 2 + 0.5;
+                dummy.scale.set(scale, scale, scale);
+                dummy.updateMatrix();
+                asteroidField.setMatrixAt(i, dummy.matrix);
+            }
+            scene.add(asteroidField);
+        }
+        createAsteroidField();
+
+        // --- MOUSE MOVEMENT ---
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        // --- ANIMATION LOOP ---
+        const clock = new THREE.Clock();
+
+        function animate() {
+            const elapsedTime = clock.getElapsedTime();
+            requestAnimationFrame(animate);
+
+            // Sync camera with mouse for parallax
+            camera.position.x += (mouseX * 10 - camera.position.x) * 0.03;
+            camera.position.y += (mouseY * 10 - camera.position.y) * 0.03;
+            camera.lookAt(scene.position);
+
+            // Animate planets
+            planets.forEach(p => {
+                p.pivot.rotation.y += p.speed;
+                p.planet.rotation.y += p.selfSpeed;
+            });
+
+            // Animate asteroid field
+            if (asteroidField) {
+                asteroidField.rotation.y += 0.0002;
+            }
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- WINDOW RESIZE ---
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // --- GSAP ANIMATIONS ---
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero Text Intro Animation
+        const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        heroTl.to('.hero-title .char', { 
+                y: '0%', 
+                stagger: 0.05,
+                duration: 1, 
+                delay: 0.5 
+            })
+            .to(['#subtitle-line-1', '#subtitle-line-2'], { opacity: 1, y: 0, stagger: 0.2, duration: 1 }, "-=0.8")
+            .to('.scroll-indicator', { opacity: 1, y: 0, duration: 1 }, "-=0.5");
+
+        // Camera Scroll Animation
+        const cameraTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: 'main',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 1.2,
+            },
+        });
+        cameraTl.to(camera.position, {
+            z: 30, // Zoom in
+            y: -10,
+            ease: 'power1.inOut'
+        });
+
+        // Content Sections Fade-in
+        gsap.utils.toArray('.content-section').forEach(section => {
+            gsap.from(section.children, {
+                opacity: 0,
+                y: 30,
+                duration: 0.8,
+                ease: 'power3.out',
+                stagger: 0.2,
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 85%',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        });
+    </script>
+</body>
+</html>

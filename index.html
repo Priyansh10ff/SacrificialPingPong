@@ -3,830 +3,1153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Priyansh Dugar - Creative Web Developer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Sacrificial Ping Pong</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        /* ========================================
-        CSS STYLES
-        ========================================
-        */
-
-        /* "COSMIC LATTE" THEME */
-        :root {
-            --primary-color: #f3f4f6;
-            --secondary-color: #9ca3af;
-            --bg-color: #111827;
-            --accent-color: #8b5cf6;
-            --secondary-accent-color: #f59e0b;
-            --card-bg: #1f2937;
-            --border-color: #374151;
-        }
-
-        /* GENERAL STYLING */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-        }
-
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--primary-color);
-            overflow-x: hidden;
-            line-height: 1.6;
+            font-family: 'Press Start 2P', cursive;
+            /* background-color: #1a1a1a; -- MOVED to stars background */
+            color: #ffffff;
+            margin: 0;
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none; /* Standard */
         }
 
-        /* LOADING SCREEN */
-        #loading-screen {
+        /* --- Twinkling Stars Background --- */
+        #stars-background {
             position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.5s ease-out;
-        }
-
-        .loader {
-            border: 5px solid var(--card-bg);
-            border-top: 5px solid var(--accent-color);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* WELCOME TOAST */
-        #welcome-toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            z-index: 999;
-            opacity: 0;
-            transform: translateX(120%);
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            background: rgba(31, 41, 55, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden; 
-        }
-
-        #welcome-toast::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            border-radius: inherit;
-            background: radial-gradient(
-                250px circle at var(--mouse-x) var(--mouse-y),
-                rgba(139, 92, 246, 0.4),
-                transparent 80%
-            );
-            opacity: 0;
-            transition: opacity 0.3s;
             z-index: -1;
-        }
-
-        #welcome-toast:hover::before {
-            opacity: 1;
-        }
-
-        #welcome-toast.visible {
-            opacity: 1;
-            transform: translateX(0%);
-        }
-
-        /* 3D CANVAS BACKGROUND */
-        #bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            outline: none;
-        }
-
-        /* HEADER & NAVIGATION */
-        header {
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 5%;
-            z-index: 100;
-            background: rgba(17, 24, 39, 0.85);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            transition: top 0.3s;
-        }
-
-        .logo {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: var(--primary-color);
-            text-decoration: none;
-            letter-spacing: normal;
-            transition: letter-spacing 0.3s ease, text-shadow 0.3s ease;
-        }
-        
-        .logo:hover {
-            letter-spacing: 1px;
-            text-shadow: 0 0 8px var(--secondary-accent-color);
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 1rem;
-        }
-
-        /* GLASS BUTTON STYLES FOR NAV LINKS */
-        nav a.glass-button {
-            position: relative;
-            z-index: 1;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem 1.25rem;
-            border-radius: 8px;
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease, transform 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: #1a1a1a;
             overflow: hidden;
         }
 
-        nav a.glass-button::before {
-            content: '';
+        .star {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            border-radius: inherit;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: url(#container-glass) blur(5px);
-            box-shadow: 
-                inset 2px 2px 0.5px -2.5px rgba(255, 255, 255, 0.2),
-                inset -2px -2px 0.5px -2.5px rgba(255, 255, 255, 0.2),
-                inset 0 0 10px rgba(255, 255, 255, 0.08);
-            transition: background 0.3s ease, box-shadow 0.3s ease;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle linear infinite;
+            box-shadow: 0 0 4px #fff, 0 0 8px #fff, 0 0 12px #00ffff;
         }
 
-        nav a.glass-button:hover {
-            color: var(--primary-color);
-            transform: translateY(-2px);
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
         }
 
-        nav a.glass-button:hover::before {
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 
-                inset 2px 2px 0.5px -2.5px rgba(255, 255, 255, 0.3),
-                inset -2px -2px 0.5px -2.5px rgba(255, 255, 255, 0.3),
-                inset 0 0 12px rgba(139, 92, 246, 0.15);
-        }
 
-        /* HERO SECTION */
-        #hero {
-            height: 100vh;
+        /* --- Homepage Styles --- */
+        .page-wrapper {
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
+            width: 100vw;
+            min-height: 100vh; /* CHANGED from height to min-height */
+            box-sizing: border-box; /* Added for better padding behavior */
             text-align: center;
-            position: relative;
-            padding: 0 5%;
+            transition: opacity 0.3s ease-in-out;
         }
-        
-        .hero-title {
-            font-size: clamp(3rem, 12vw, 7rem);
-            font-weight: 800;
+        #homepage-container {
+            flex-direction: column;
+            padding: 2rem;
+            position: relative;
+        }
+        .homepage-title {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff, 0 0 25px #00ffff, 0 0 40px #ff4757;
+            margin-bottom: 1rem;
+            animation: flicker 2s infinite alternate;
+        }
+        .homepage-tagline {
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 3rem;
             letter-spacing: 2px;
-            line-height: 1.1;
-            color: var(--primary-color);
         }
-
-        .hero-title .word {
-            display: inline-block;
-            margin: 0 0.5rem;
-            overflow: hidden;
-        }
-        
-        .hero-title .char {
-            display: inline-block;
-            transform: translateY(115%);
-            transition: transform .5s cubic-bezier(.22, .61, .36, 1);
-        }
-
-        .hero-subtitle {
-            margin-top: 1.5rem;
-        }
-
-        .hero-subtitle span {
-            display: block;
-            font-size: clamp(1.1rem, 3.5vw, 1.8rem);
-            color: var(--secondary-color);
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        /* SCROLL INDICATOR */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 3rem;
+        .info-boxes-container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--secondary-color);
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .indicator-line {
-            width: 2px;
-            height: 50px;
-            background: var(--secondary-color);
-            margin-top: 10px;
-            animation: pulse-line 1.5s infinite ease-in-out;
-        }
-
-        @keyframes pulse-line {
-            0% { transform: scaleY(0.5); opacity: 0.5; }
-            50% { transform: scaleY(1); opacity: 1; }
-            100% { transform: scaleY(0.5); opacity: 0.5; }
-        }
-
-        /* CONTENT SECTIONS */
-        .content-section {
-            padding: 8rem 5%;
-            max-width: 1100px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-            min-height: 50vh;
-        }
-
-        .content-section h2 {
-            font-size: clamp(2.2rem, 5vw, 3rem);
-            text-align: center;
-            margin-bottom: 4rem;
-            position: relative;
-            color: var(--primary-color);
-            text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
-        }
-
-        .content-section h2::after {
-            content: '';
-            position: absolute;
-            width: 50%;
-            height: 4px;
-            background-color: var(--accent-color);
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-
-        /* ABOUT SECTION */
-        .about-content {
-            display: flex;
-            align-items: center;
-            gap: 4rem;
-            flex-wrap: wrap;
             justify-content: center;
-            text-align: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+            padding: 0 1rem;
         }
-
-        .profile-pic {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            border: 4px solid var(--accent-color);
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
-            object-fit: cover;
-            margin: 0 auto 1.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .profile-pic:hover {
-            transform: scale(1.05);
-        }
-
-        .about-content p {
-            flex: 1;
-            min-width: 320px;
-            line-height: 1.9;
-            font-size: 1.15rem;
-            text-align: left;
-            color: var(--secondary-color);
+        .instructions-box {
+            border: 2px solid #465a70;
+            padding: 1.5rem 2rem;
+            border-radius: 1rem;
             max-width: 600px;
+            background-color: rgba(0,0,0,0.3);
+            text-align: left;
         }
-        .about-content p code {
-            font-family: monospace;
-            background-color: var(--card-bg);
-            padding: 0.2em 0.4em;
+        .info-boxes-container .instructions-box {
+            flex-basis: 300px;
+            flex-grow: 1;
+            max-width: 340px;
+            opacity: 0; /* Start hidden for animation */
+            animation: fadeInBottom 0.7s ease-out forwards;
+        }
+        .instructions-box h3 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .instructions-box p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            font-size: 0.8rem;
+        }
+        .key-style {
+            background-color: #465a70;
+            padding: 0.2rem 0.6rem;
             border-radius: 4px;
-            color: var(--accent-color);
+            border-bottom: 2px solid #2c3e50;
+            color: #ffffff;
+            font-size: 0.7rem;
         }
-
-        /* PROJECTS SECTION */
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
-            max-width: 900px; /* Adjust max-width for 2 items */
-            margin: 0 auto;
+        .about-us {
+            /* Changed from absolute to allow it to be part of the flow */
+            padding-top: 4rem;
+            padding-bottom: 1rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+            opacity: 0; /* Start hidden for animation */
+            animation: fadeInBottom 0.7s ease-out forwards;
+            animation-delay: 0.8s;
         }
-
-        .project-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
+        @keyframes flicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                text-shadow: 0 0 8px #00ffff, 0 0 20px #00ffff, 0 0 35px #ff4757;
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+            }
         }
-
-        .project-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        @keyframes fadeInBottom {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+        /* Stagger animations for the info boxes */
+        .info-boxes-container .instructions-box:nth-child(1) { animation-delay: 0.2s; }
+        .info-boxes-container .instructions-box:nth-child(2) { animation-delay: 0.4s; }
+        .info-boxes-container .instructions-box:nth-child(3) { animation-delay: 0.6s; }
 
-        .project-card img {
+
+        /* --- Game Styles --- */
+        .game-wrapper {
+            position: relative;
+            /* Ensure game wrapper takes full height for centering */
+            height: 100vh;
+        }
+        canvas {
+            /* REMOVED background gradient, will be drawn dynamically */
+            display: block;
+            border-radius: 1rem;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+            image-rendering: -moz-crisp-edges;
+            image-rendering: pixelated;
+        }
+        .game-container {
+            position: relative;
+            line-height: 0;
+        }
+        .score-board {
+            /* This div is now just a container for the absolutely positioned scores. */
             width: 100%;
-            height: 220px;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .project-card:hover img {
-            transform: scale(1.03);
-        }
-
-        .project-card-content {
-            padding: 1.8rem;
-        }
-
-        .project-card h3 {
-            margin-bottom: 0.8rem;
-            color: var(--primary-color);
-            font-size: 1.4rem;
-        }
-
-        .project-card p {
-            margin-bottom: 1.5rem;
-            color: var(--secondary-color);
-            font-size: 1rem;
-        }
-
-        .project-links a {
-            color: var(--secondary-accent-color);
-            text-decoration: none;
-            font-weight: 600;
-            margin-right: 1.2rem;
-            transition: color 0.3s ease;
-        }
-
-        .project-links a:hover {
-            color: #fbbf24;
-        }
-        
-        .disabled-link {
-            color: var(--secondary-color);
-            opacity: 0.6;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
             pointer-events: none;
         }
-
-        /* CONNECT WITH ME SECTION */
-        #contact-info {
-            padding: 8rem 5%;
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
+        /* --- Player-specific score colors & positioning --- */
+        #scoreBottom, #scoreTop {
+            position: absolute;
+            font-size: 3rem;
         }
-
-        .contact-links {
+        #scoreBottom {
+            color: rgba(0, 255, 255, 0.4); /* Blue Player */
+            top: 50%;
+            right: 2rem;
+            margin-top: 1rem; /* Push below center line */
+        }
+        #scoreTop {
+            color: rgba(255, 71, 87, 0.4); /* Red Player */
+            bottom: 50%;
+            left: 2rem;
+            margin-bottom: 1rem; /* Push above center line */
+        }
+        .score-pop {
+            animation: score-pop-animation 0.4s ease-out;
+        }
+        @keyframes score-pop-animation {
+            0% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.5); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .menu-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.75);
+            padding: 2rem 3rem;
+            border-radius: 1rem;
+            text-align: center;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            width: 90%;
+            max-width: 500px;
+        }
+        .menu-box h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #00ffff;
+            line-height: 1.2;
+        }
+        .menu-box p {
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            max-width: 400px;
+            line-height: 1.6;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        button {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #00ffff;
+            color: #1a1a1a;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px #00b3b3;
+            font-size: 1rem;
+            margin: 0.5rem;
+        }
+        button:hover {
+            background-color: #33ffff;
+            transform: translateY(-2px);
+            box-shadow: 0 7px #00b3b3;
+        }
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px #00b3b3;
+        }
+        .button-container {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 2.5rem;
-            margin-top: 3rem;
+            gap: 1rem;
         }
-
-        .contact-link-item {
-            display: flex;
-            flex-direction: column;
+        .settings-row {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1rem;
             align-items: center;
-            text-decoration: none;
-            color: var(--secondary-color);
-            font-size: 1.1rem;
-            transition: color 0.3s ease, transform 0.3s ease;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            text-align: left;
         }
 
-        .contact-link-item i {
-            font-size: 3.5rem;
-            color: var(--accent-color);
-            margin-bottom: 0.8rem;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-
-        .contact-link-item:hover {
-            color: var(--primary-color);
-            transform: translateY(-5px);
-        }
-
-        .contact-link-item:hover i {
-            color: #a78bfa; /* Lighter Violet on hover */
-            transform: scale(1.1);
-        }
-
-        /* FOOTER */
-        footer {
-            text-align: center;
-            padding: 2.5rem 5%;
-            margin-top: 4rem;
-            border-top: 1px solid var(--border-color);
-            color: var(--secondary-color);
-            font-size: 0.95rem;
-        }
-
-        /* RESPONSIVE DESIGN */
+        /* --- Responsive Refinements --- */
         @media (max-width: 768px) {
-            nav { display: none; }
-            .hero-title { font-size: 4.5rem; }
-            .hero-subtitle span { font-size: 1.3rem; }
-            .about-content {
-                flex-direction: column;
-                gap: 2rem;
+            .page-wrapper {
+                /* On small screens, start content from the top instead of centered */
+                align-items: flex-start;
+                padding-top: 4rem;
             }
-            .about-content p {
-                text-align: center;
+            .homepage-title {
+                font-size: clamp(2rem, 12vw, 3rem);
             }
-            .contact-links {
-                gap: 1.5rem;
+            .menu-box {
+                padding: 1.5rem;
             }
-            .contact-link-item i {
-                font-size: 2.5rem;
+            .menu-box h2 {
+                font-size: 1.8rem;
             }
-            #welcome-toast {
-                bottom: 10px;
-                right: 10px;
-                left: 10px;
-                text-align: center;
+            .menu-box p {
+                font-size: 0.8rem;
+            }
+            button {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            #homepage-container {
+                 padding: 1rem;
             }
         }
     </style>
 </head>
 <body>
-    <div id="loading-screen">
-        <div class="loader"></div>
-    </div>
 
-    <canvas id="bg"></canvas>
+<div id="stars-background"></div>
 
-    <div id="welcome-toast">
-        <p>Oh, look. A visitor. I've tidied up the pixels just for you. 😉</p>
-    </div>
-
-    <header>
-        <a href="#hero" class="logo">Priyansh Dugar</a>
-        <nav>
-            <ul>
-                <li><a href="#hero" class="glass-button">Home</a></li>
-                <li><a href="#about" class="glass-button">About</a></li>
-                <li><a href="#projects" class="glass-button">Projects</a></li>
-                <li><a href="#contact-info" class="glass-button">Connect</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <section id="hero">
-            <div class="hero-content">
-                <h1 class="hero-title" aria-label="Priyansh Dugar">
-                </h1>
-                <p class="hero-subtitle">
-                    <span id="subtitle-line-1">Creative Web Developer</span>
-                    <span id="subtitle-line-2">& UI/UX Designer</span>
-                </p>
-            </div>
-            <div class="scroll-indicator">
-                <span>SCROLL</span>
-                <div class="indicator-line"></div>
-            </div>
-        </section>
-
-        <section id="about" class="content-section">
-            <h2>About Me</h2>
-            <div class="about-content">
-                <img src="WhatsApp Image 2025-09-20 at 02.32.41_4a1ccc5d.jpg" alt="Priyansh Dugar" class="profile-pic">
+<div id="homepage-container" class="page-wrapper">
+    <div>
+        <h1 class="homepage-title">Sacrificial Ping Pong</h1>
+        <p class="homepage-tagline">Choose your battle.</p>
+        <div class="button-container">
+             <button id="vsAiButton">Player vs AI</button>
+             <button id="vsPlayerButton">Player vs Player</button>
+        </div>
+        <div class="info-boxes-container">
+            <div class="instructions-box">
+                <h3>Controls</h3>
                 <p>
-                    I’m Priyansh, a front-end developer and UI/UX designer on a mission to make the web a more beautiful and user-friendly place. Or, at the very least, a place with fewer 'rage-click' moments. 😫
+                    <b>Keyboard:</b>
+                    <br>
+                    P1: <span class="key-style">←</span>/<span class="key-style">→</span> or <span class="key-style">A</span>/<span class="key-style">D</span>
+                    <br>
+                    P2: <span class="key-style">A</span> & <span class="key-style">D</span> Keys
                     <br><br>
-                    Currently in my <strong>1st year</strong> of Computer Science at the prestigious <strong>Scaler School of Technology</strong>, I'm basically a code-compiling, pixel-perfecting machine in training. 🧠 I’m obsessed with the intersection of clean, elegant design and robust, scalable code.
-                    <br><br>
-                    When I'm not drowning in coursework, my brain is a chaotic playground of new tech and design principles. The goal is to craft digital experiences so seamless they seem to run on magic, logic, and <code>undefinied</code> amounts of coffee. ☕
-                    <br><br>
-                    If you’re looking for someone who’s passionate, constantly learning, and probably fixing a bug they created at 3 AM, we should talk. Let's build something amazing. 🚀
+                    <b>Touch:</b>
+                    <br>
+                    Drag on your side of the screen to move your paddle.
                 </p>
             </div>
-        </section>
-
-        <section id="projects" class="content-section">
-            <h2>My Projects</h2>
-            <div class="project-grid">
-                <div class="project-card">
-                    <img src="https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDEzfHx3ZWF0aGVyJTIwYXBwfGVufDB8fHx8MTY3NDA1MzkzNQ&ixlib=rb-4.0.3&q=80&w=870" alt="Weather App Project">
-                    <div class="project-card-content">
-                        <h3>WeatherWise</h3>
-                        <p>A beautifully crafted weather application that delivers real-time meteorological data with a stunning and interactive user interface. Powered by a robust weather API, this app provides precise forecasts, dynamic backgrounds that change with the conditions, and a seamless, intuitive user experience. A showcase of modern front-end techniques and API integration.</p>
-                        <div class="project-links">
-                            <a href="https://priyansh10ff.github.io/Personal/" target="_blank" rel="noopener noreferrer">Live Demo</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card">
-                     <img src="https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDV8fGVjb21tZXJjZXxlbnwwfHx8fDE2NzQwNTQxMTE&ixlib=rb-4.0.3&q=80&w=870" alt="E-commerce Website Project">
-                     <div class="project-card-content">
-                         <h3>E-Commerce Platform</h3>
-                         <p>A modern e-commerce website featuring a clean UI, product browsing, and a functional shopping cart. Built with a focus on responsive design and a seamless user experience from homepage to checkout.</p>
-                         <div class="project-links">
-                             <a href="https://eecommerce10.netlify.app/" target="_blank" rel="noopener noreferrer">Live Demo</a>
-                         </div>
-                     </div>
-                </div>
+            <div class="instructions-box">
+                <h3>How to Play VS AI</h3>
+                <p>
+                    Face a computer opponent that gets tougher as you score. The AI paddle tracks the ball automatically. Get the ball past it to score!
+                </p>
             </div>
-        </section>
-
-        <section id="contact-info" class="content-section">
-            <h2>Connect with Me</h2>
-            <div class="contact-links">
-                <a href="mailto:priyansh10jan@gmail.com" class="contact-link-item" target="_blank" rel="noopener noreferrer">
-                    <i class="fas fa-envelope"></i>
-                    <span>Email</span>
-                </a>
-                <a href="https://www.linkedin.com/in/priyansh-dugar-709333363/" class="contact-link-item" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-linkedin-in"></i>
-                    <span>LinkedIn</span>
-                </a>
-                <a href="https://github.com/Priyansh10ff" class="contact-link-item" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-github"></i>
-                    <span>GitHub</span>
-                </a>
-                <a href="https://www.instagram.com/priyanshdugar_10/" class="contact-link-item" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-instagram"></i>
-                    <span>Instagram</span>
-                </a>
+            <div class="instructions-box">
+                <h3>Game Rules</h3>
+                <p>
+                    Each paddle has two layers. A hit destroys one layer, creating a gap. Use it to your advantage!
+                    <br><br>
+                    Watch for power-ups on paddle hits!
+                    <br><b>Green (E):</b> Expands your paddle.
+                    <br><b>Red (S):</b> Shrinks your foe.
+                    <br><b>Yellow (F):</b> Speeds up the ball.
+                </p>
             </div>
-        </section>
-    </main>
+        </div>
+        <div class="about-us">
+            <p>A unique twist on a classic arcade game. Enjoy the retro vibes.</p>
+        </div>
+    </div>
+</div>
 
-    <footer>
-        <p>&copy; 2025 Priyansh Dugar. All Rights Reserved.</p>
-    </footer>
+<div id="game-wrapper" class="page-wrapper game-wrapper" style="display: none; opacity: 0;">
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="scoreBoard" class="score-board">
+            <span id="scoreTop">0</span>
+            <span id="scoreBottom">0</span>
+        </div>
+        <div id="message-box" class="menu-box">
+            <h2>Sacrificial Ping Pong</h2>
+            <p id="gameDescription">First to 10 wins! Both paddles split on hit.</p>
+            <div class="button-container">
+                <button id="startButton">Start Game</button>
+                <button id="settingsButton">Settings</button>
+                <button id="homeButton">Home</button>
+            </div>
+        </div>
+        <div id="settings-box" class="menu-box" style="display: none;">
+            <h2>Settings</h2>
+            <div class="settings-row">
+                <label for="winningScoreInput">Winning Score:</label>
+                <input type="range" id="winningScoreInput" min="1" max="20" value="10">
+                <span id="winningScoreValue">10</span>
+            </div>
+            <div class="settings-row" id="ai-settings-row">
+                <label for="aiDifficultyInput">AI Difficulty:</label>
+                <input type="range" id="aiDifficultyInput" min="1" max="10" value="5">
+                <span id="aiDifficultyValue">5</span>
+            </div>
+            <div class="settings-row">
+                <label for="ballSpeedInput">Ball Speed:</label>
+                <input type="range" id="ballSpeedInput" min="1" max="10" value="4">
+                <span id="ballSpeedValue">4</span>
+            </div>
+            <div class="button-container">
+                <button id="saveSettingsButton">Back</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <svg style="display: none;">
-        <defs>
-            <filter id="container-glass">
-                <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="1" seed="1" result="turbulence" />
-                <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
-                <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="10" xChannelSelector="R" yChannelSelector="G" result="displaced" />
-                <feGaussianBlur in="displaced" stdDeviation="3" result="finalBlur" />
-            </filter>
-        </defs>
-    </svg>
+<script>
+    // --- Basic Setup ---
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const messageBox = document.getElementById('message-box');
+    const startButton = document.getElementById('startButton');
+    const scoreBottomEl = document.getElementById('scoreBottom');
+    const scoreTopEl = document.getElementById('scoreTop');
+    const settingsButton = document.getElementById('settingsButton');
+    const settingsBox = document.getElementById('settings-box');
+    const saveSettingsButton = document.getElementById('saveSettingsButton');
+    const winningScoreInput = document.getElementById('winningScoreInput');
+    const winningScoreValue = document.getElementById('winningScoreValue');
+    const aiDifficultyInput = document.getElementById('aiDifficultyInput');
+    const aiDifficultyValue = document.getElementById('aiDifficultyValue');
+    const ballSpeedInput = document.getElementById('ballSpeedInput');
+    const ballSpeedValue = document.getElementById('ballSpeedValue');
+    const gameDescription = document.getElementById('gameDescription');
+    const homepageContainer = document.getElementById('homepage-container');
+    const gameWrapper = document.getElementById('game-wrapper');
+    const vsAiButton = document.getElementById('vsAiButton');
+    const vsPlayerButton = document.getElementById('vsPlayerButton');
+    const homeButton = document.getElementById('homeButton');
+    const aiSettingsRow = document.getElementById('ai-settings-row');
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
-    <script type="module">
-        // --- LOADING SCREEN ---
-        const loadingScreen = document.getElementById('loading-screen');
-        const welcomeToast = document.getElementById('welcome-toast');
-        window.addEventListener('load', () => {
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
+    let gameMode = 'ai'; // 'ai' or 'multiplayer'
+    let animationFrameId;
+    let isGameOver = false; 
 
-                // --- WELCOME TOAST LOGIC ---
-                setTimeout(() => {
-                    welcomeToast.classList.add('visible');
-                }, 1000);
+    // --- Countdown State ---
+    let isCountdownActive = false;
+    let countdownValue = 3;
 
-                setTimeout(() => {
-                    welcomeToast.classList.remove('visible');
-                }, 10000);
+    // --- Game Constants ---
+    const GAME_WIDTH = 800;
+    const GAME_HEIGHT = 600;
+    let winningScore = 10;
+    
+    // --- Game Background Stars ---
+    const gameStars = [];
+    const NUM_GAME_STARS = 150;
 
-            }, 500);
-        });
-
-        // --- GLOWING BORDER FOR TOAST ---
-        welcomeToast.addEventListener('mousemove', e => {
-            const rect = welcomeToast.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            welcomeToast.style.setProperty('--mouse-x', `${x}px`);
-            welcomeToast.style.setProperty('--mouse-y', `${y}px`);
-        });
-
-        // --- SPLIT-TEXT SETUP ---
-        const titleEl = document.querySelector('.hero-title');
-        const titleText = "PRIYANSH DUGAR";
-        titleEl.innerHTML = titleText.split(" ").map(word => 
-            `<span class="word">${word.split("").map(char => `<span class="char">${char}</span>`).join("")}</span>`
-        ).join(" ");
-
-
-        // --- THREE.JS SETUP ---
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x111827, 0.0015);
-
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 0, 100);
-
-        const renderer = new THREE.WebGLRenderer({
-            canvas: document.querySelector('#bg'),
-            antialias: true,
-            alpha: true,
-        });
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        // --- LIGHTING ---
-        const pointLight = new THREE.PointLight(0xf59e0b, 1.5, 300); // Gold sun
-        pointLight.position.set(0, 0, 0);
-        scene.add(pointLight);
-
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // Soft ambient light
-        scene.add(ambientLight);
-
-        // --- 3D MOTION GRAPHICS ---
-        let planets = [];
-        let asteroidField;
-
-        // Create a visible Sun object
-        const sunGeometry = new THREE.SphereGeometry(4, 32, 32);
-        const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xf59e0b, fog: false });
-        const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
-        scene.add(sunMesh);
-
-        // Create Revolving Planets
-        function createPlanets() {
-            const planetData = [
-                { size: 3, color: 0x8b5cf6, distance: 40, speed: 0.005 }, // Violet planet
-                { size: 5, color: 0x374151, distance: 70, speed: 0.003 }  // Blue-Gray planet
-            ];
-
-            planetData.forEach(data => {
-                const geometry = new THREE.SphereGeometry(data.size, 32, 32);
-                const material = new THREE.MeshStandardMaterial({
-                    color: data.color,
-                    roughness: 0.8,
-                    metalness: 0.2
-                });
-                const planet = new THREE.Mesh(geometry, material);
-
-                const pivot = new THREE.Object3D();
-                scene.add(pivot);
-                pivot.add(planet);
-                planet.position.x = data.distance;
-
-                planets.push({ planet, pivot, speed: data.speed, selfSpeed: Math.random() * 0.01 });
-            });
+    // --- Power-up Constants ---
+    const POWER_UP_CHANCE = 0.15; // 15% chance
+    const powerUps = [];
+    const POWER_UP_TYPES = {
+        EXPAND_SELF: {
+            id: 'EXPAND_SELF',
+            color: '#2ecc71', // green
+            duration: 10000 // 10s
+        },
+        SHRINK_OPPONENT: {
+            id: 'SHRINK_OPPONENT',
+            color: '#e74c3c', // red
+            duration: 5000 // 5s
+        },
+        SPEED_BOOST: {
+            id: 'SPEED_BOOST',
+            color: '#f1c40f', // yellow
+            duration: 10000 // 10s
         }
-        createPlanets();
+    };
 
-        // Create an Asteroid Field
-        function createAsteroidField() {
-            const asteroidCount = 500;
-            const geometry = new THREE.DodecahedronGeometry(1, 0);
-            const material = new THREE.MeshStandardMaterial({
-                color: 0x555555,
-                roughness: 0.9,
-                metalness: 0.1
-            });
-            asteroidField = new THREE.InstancedMesh(geometry, material, asteroidCount);
+    // --- Audio Setup ---
+    const synth = new Tone.Synth().toDestination();
 
-            const dummy = new THREE.Object3D();
-            for (let i = 0; i < asteroidCount; i++) {
-                dummy.position.set(
-                    (Math.random() - 0.5) * 400,
-                    (Math.random() - 0.5) * 200,
-                    (Math.random() - 0.5) * 400
-                );
-                dummy.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
-                const scale = Math.random() * 2 + 0.5;
-                dummy.scale.set(scale, scale, scale);
-                dummy.updateMatrix();
-                asteroidField.setMatrixAt(i, dummy.matrix);
+    // --- Game Objects ---
+    const ball = { x: 0, y: 0, radius: 12, speed: 4.0, dx: 0, dy: 0, baseSpeed: 4.0, maxSpeed: 8.0, activeSpeedBoost: null, speedBoostTimeoutId: null };
+
+    const player1 = { name: "Player 1", x: 0, y: GAME_HEIGHT - 30, width: 150, originalWidth: 150, height: 20, color: '#00ffff', score: 0, layer1_segments: [], layer2_segments: [], hitTimer: 0, activeEffect: null, effectTimeoutId: null };
+    const player2 = { name: "Player 2", x: 0, y: 10, width: 150, originalWidth: 150, height: 20, color: '#ff4757', score: 0, layer1_segments: [], layer2_segments: [], hitTimer: 0, activeEffect: null, effectTimeoutId: null };
+    const ai = { x: 0, y: 10, width: 150, originalWidth: 150, height: 20, color: '#ff4757', score: 0, layer1_segments: [], layer2_segments: [], error: 0.35, initialError: 0.35, minError: 0.02, hitTimer: 0, activeEffect: null, effectTimeoutId: null };
+
+    // --- Controls ---
+    const controls = { p1Right: false, p1Left: false, p2Right: false, p2Left: false };
+
+    // KEYBOARD CONTROLS
+    document.addEventListener('keydown', (e) => {
+        const key = e.key.toLowerCase();
+        if (gameMode === 'multiplayer') {
+            if (key === 'right' || key === 'arrowright') controls.p1Right = true;
+            else if (key === 'left' || key === 'arrowleft') controls.p1Left = true;
+            if (key === 'd') controls.p2Right = true;
+            else if (key === 'a') controls.p2Left = true;
+        } else { // 'ai' mode
+            if (key === 'right' || key === 'arrowright' || key === 'd') controls.p1Right = true;
+            else if (key === 'left' || key === 'arrowleft' || key === 'a') controls.p1Left = true;
+        }
+    });
+
+    document.addEventListener('keyup', (e) => {
+        const key = e.key.toLowerCase();
+        if (gameMode === 'multiplayer') {
+            if (key === 'right' || key === 'arrowright') controls.p1Right = false;
+            else if (key === 'left' || key === 'arrowleft') controls.p1Left = false;
+            if (key === 'd') controls.p2Right = false;
+            else if (key === 'a') controls.p2Left = false;
+        } else { // 'ai' mode
+            if (key === 'right' || key === 'arrowright' || key === 'd') controls.p1Right = false;
+            else if (key === 'left' || key === 'arrowleft' || key === 'a') controls.p1Left = false;
+        }
+    });
+
+    // TOUCH CONTROLS
+    function handleTouchMove(e) {
+        e.preventDefault(); // Prevent scrolling
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = GAME_WIDTH / rect.width;
+
+        for (let i = 0; i < e.touches.length; i++) {
+            const touch = e.touches[i];
+            const touchX = (touch.clientX - rect.left) * scaleX;
+            const touchY = touch.clientY;
+
+            // Bottom half of the screen for Player 1
+            if (touchY > window.innerHeight / 2) {
+                player1.x = touchX - player1.width / 2;
+                if (player1.x < 0) player1.x = 0;
+                if (player1.x > GAME_WIDTH - player1.width) player1.x = GAME_WIDTH - player1.width;
             }
-            scene.add(asteroidField);
-        }
-        createAsteroidField();
-
-        // --- MOUSE MOVEMENT ---
-        let mouseX = 0, mouseY = 0;
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-        });
-
-        // --- ANIMATION LOOP ---
-        const clock = new THREE.Clock();
-
-        function animate() {
-            const elapsedTime = clock.getElapsedTime();
-            requestAnimationFrame(animate);
-
-            // Sync camera with mouse for parallax
-            camera.position.x += (mouseX * 10 - camera.position.x) * 0.03;
-            camera.position.y += (mouseY * 10 - camera.position.y) * 0.03;
-            camera.lookAt(scene.position);
-
-            // Animate planets
-            planets.forEach(p => {
-                p.pivot.rotation.y += p.speed;
-                p.planet.rotation.y += p.selfSpeed;
-            });
-
-            // Animate asteroid field
-            if (asteroidField) {
-                asteroidField.rotation.y += 0.0002;
+            // Top half for Player 2 (in multiplayer)
+            else if (gameMode === 'multiplayer' && touchY < window.innerHeight / 2) {
+                player2.x = touchX - player2.width / 2;
+                if (player2.x < 0) player2.x = 0;
+                if (player2.x > GAME_WIDTH - player2.width) player2.x = GAME_WIDTH - player2.width;
             }
-
-            renderer.render(scene, camera);
         }
-        animate();
+    }
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchstart', handleTouchMove, { passive: false });
 
-        // --- WINDOW RESIZE ---
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // --- Game Logic ---
+    function resizeCanvas() {
+        const aspectRatio = GAME_WIDTH / GAME_HEIGHT;
+        let newWidth = window.innerWidth;
+        let newHeight = window.innerHeight;
+        
+        // Apply some padding
+        const padding = 20;
+        newWidth -= padding;
+        newHeight -= padding;
+
+        if (newHeight * aspectRatio > newWidth) {
+            newHeight = newWidth / aspectRatio;
+        } else {
+            newWidth = newHeight * aspectRatio;
+        }
+        
+        canvas.style.width = `${newWidth}px`;
+        canvas.style.height = `${newHeight}px`;
+        canvas.width = GAME_WIDTH;
+        canvas.height = GAME_HEIGHT;
+        draw();
+    }
+    
+    function launchBall() {
+        let angle = Math.random() * Math.PI / 2 - Math.PI / 4;
+        ball.dx = ball.speed * Math.sin(angle);
+        ball.dy = ball.speed * (Math.random() > 0.5 ? 1 : -1) * Math.cos(angle);
+    }
+    
+    function resetBall() {
+        ball.speed = ball.baseSpeed;
+        ball.x = GAME_WIDTH / 2;
+        ball.y = GAME_HEIGHT / 2;
+        ball.dx = 0; ball.dy = 0;
+    }
+    
+    function startInitialCountdown() {
+        isCountdownActive = true;
+        countdownValue = 3;
+        resetBall();
+        const countdownInterval = setInterval(() => {
+            synth.triggerAttackRelease("G4", "16n");
+            countdownValue--;
+            if (countdownValue <= 0) {
+                clearInterval(countdownInterval);
+                isCountdownActive = false;
+                synth.triggerAttackRelease("C5", "8n");
+                launchBall();
+            }
+        }, 1000);
+    }
+
+    // --- Helper function to reset paddle segments to its current width
+    function resetPaddleSegments(paddle) {
+        paddle.layer1_segments = [{ x_offset: 0, width: paddle.width }];
+        paddle.layer2_segments = [{ x_offset: 0, width: paddle.width }];
+    }
+
+    function resetPaddles() {
+        powerUps.length = 0; // Clear any active power-ups
+        [player1, player2, ai].forEach(p => {
+            clearActiveEffect(p); // Clear any effects
+            p.width = p.originalWidth;
+            p.x = (GAME_WIDTH - p.width) / 2;
+            p.score = 0;
+            resetPaddleSegments(p); // Use the helper
         });
+        ai.error = ai.initialError;
+    }
 
-        // --- GSAP ANIMATIONS ---
-        gsap.registerPlugin(ScrollTrigger);
+    // --- Function to create stars for the game canvas
+    function createGameStars() {
+        gameStars.length = 0; // Clear existing stars
+        for (let i = 0; i < NUM_GAME_STARS; i++) {
+            gameStars.push({
+                x: Math.random() * GAME_WIDTH,
+                y: Math.random() * GAME_HEIGHT,
+                size: Math.random() * 2 + 0.5,
+                speed: Math.random() * 0.5 + 0.25
+            });
+        }
+    }
 
-        // Hero Text Intro Animation
-        const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-        heroTl.to('.hero-title .char', { 
-                y: '0%', 
-                stagger: 0.05,
-                duration: 1, 
-                delay: 0.5 
-            })
-            .to(['#subtitle-line-1', '#subtitle-line-2'], { opacity: 1, y: 0, stagger: 0.2, duration: 1 }, "-=0.8")
-            .to('.scroll-indicator', { opacity: 1, y: 0, duration: 1 }, "-=0.5");
+    function init() {
+        isGameOver = false; // Reset game state on start
+        if (ball.speedBoostTimeoutId) clearTimeout(ball.speedBoostTimeoutId);
+        ball.activeSpeedBoost = null;
+        ball.speedBoostTimeoutId = null;
+        createGameStars(); // Create stars for the game background
+        resetPaddles();
+        updateScores();
+        messageBox.style.display = 'none';
+        startInitialCountdown();
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        gameLoop();
+    }
+    
+    function updateScores(scorer) {
+        scoreBottomEl.textContent = player1.score;
+        scoreTopEl.textContent = (gameMode === 'ai') ? ai.score : player2.score;
 
-        // Camera Scroll Animation
-        const cameraTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: 'main',
-                start: 'top top',
-                end: 'bottom bottom',
-                scrub: 1.2,
-            },
-        });
-        cameraTl.to(camera.position, {
-            z: 30, // Zoom in
-            y: -10,
-            ease: 'power1.inOut'
-        });
+        const el = (scorer === player1) ? scoreBottomEl : scoreTopEl;
+        if (el) {
+            el.classList.add('score-pop');
+            setTimeout(() => el.classList.remove('score-pop'), 400);
+        }
+    }
 
-        // Content Sections Fade-in
-        gsap.utils.toArray('.content-section').forEach(section => {
-            gsap.from(section.children, {
-                opacity: 0,
-                y: 30,
-                duration: 0.8,
-                ease: 'power3.out',
-                stagger: 0.2,
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top 85%',
-                    toggleActions: 'play none none reverse'
+    function movePaddles() {
+        const paddleSpeed = 7;
+        // Keyboard controls always active
+        if (controls.p1Right && player1.x < GAME_WIDTH - player1.width) player1.x += paddleSpeed;
+        if (controls.p1Left && player1.x > 0) player1.x -= paddleSpeed;
+        
+        if (gameMode === 'multiplayer') {
+            if (controls.p2Right && player2.x < GAME_WIDTH - player2.width) player2.x += paddleSpeed;
+            if (controls.p2Left && player2.x > 0) player2.x -= paddleSpeed;
+        } else {
+            const paddleCenter = ai.x + ai.width / 2;
+            const aiSpeed = ball.speed * 0.8;
+            if (paddleCenter < ball.x - 10) ai.x += aiSpeed;
+            else if (paddleCenter > ball.x + 10) ai.x -= aiSpeed;
+            ai.x += (Math.random() - 0.5) * ball.speed * ai.error;
+            if (ai.x < 0) ai.x = 0;
+            if (ai.x > GAME_WIDTH - ai.width) ai.x = GAME_WIDTH - ai.width;
+        }
+    }
+    
+    function moveBall() {
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+
+        // Wall collision
+        if (ball.x + ball.radius > GAME_WIDTH || ball.x - ball.radius < 0) {
+            ball.dx *= -1;
+            synth.triggerAttackRelease("G3", "8n");
+        }
+
+        // Score logic
+        let pointScored = false;
+        if (ball.y > GAME_HEIGHT) { // Top player scores
+            if (!isGameOver) { 
+                if (gameMode === 'ai') ai.score++; else player2.score++;
+                updateScores((gameMode === 'ai') ? ai : player2);
+            }
+            pointScored = true;
+        } else if (ball.y < 0) { // Bottom player scores
+            if (!isGameOver) { 
+                player1.score++;
+                updateScores(player1);
+                if (gameMode === 'ai') {
+                    ai.error = Math.max(ai.minError, ai.initialError - (player1.score / winningScore) * (ai.initialError - ai.minError));
                 }
-            });
+            }
+            pointScored = true;
+        }
+        
+        if (pointScored) {
+            const winner = checkWinner();
+            if (winner) {
+                endGame(`${winner.name} Wins!`);
+            } else {
+                // Reset segments but keep power-up width effects
+                resetPaddleSegments(player1);
+                const topPaddle = (gameMode === 'ai') ? ai : player2;
+                resetPaddleSegments(topPaddle);
+                resetBall();
+                launchBall();
+            }
+            return;
+        }
+
+        // Paddle collision
+        const topPaddle = (gameMode === 'ai') ? ai : player2;
+        // Player 1 (Bottom)
+        if (ball.dy > 0 && ball.y + ball.radius >= player1.y && ball.y + ball.radius <= player1.y + player1.height) {
+            handlePaddleCollision(player1);
+        }
+        // Top Paddle (Player 2 or AI)
+        if (ball.dy < 0 && ball.y - ball.radius <= topPaddle.y + topPaddle.height && ball.y - ball.radius >= topPaddle.y) {
+            handlePaddleCollision(topPaddle);
+        }
+    }
+    
+    function handlePaddleCollision(paddle) {
+        // Check front layer first
+        for (let i = 0; i < paddle.layer1_segments.length; i++) {
+            const seg = paddle.layer1_segments[i];
+            if (ball.x > paddle.x + seg.x_offset && ball.x < paddle.x + seg.x_offset + seg.width) {
+                splitSegment(paddle, paddle.layer1_segments, i);
+                return; // Hit confirmed, exit function
+            }
+        }
+        // If no hit on front layer (ball is in a gap), check back layer
+        for (let i = 0; i < paddle.layer2_segments.length; i++) {
+            const seg = paddle.layer2_segments[i];
+            if (ball.x > paddle.x + seg.x_offset && ball.x < paddle.x + seg.x_offset + seg.width) {
+                splitSegment(paddle, paddle.layer2_segments, i);
+                return; // Hit confirmed, exit function
+            }
+        }
+    }
+
+    function splitSegment(paddle, layer, segmentIndex) {
+        synth.triggerAttackRelease("C4", "8n");
+        paddle.hitTimer = 10;
+
+        const hitSegment = layer[segmentIndex];
+        
+        const splitPoint = ball.x - paddle.x;
+        const gapWidth = ball.radius * 2;
+        const newLeftWidth = splitPoint - (gapWidth / 2) - hitSegment.x_offset;
+        const newRightXOffset = splitPoint + (gapWidth / 2);
+        const newRightWidth = (hitSegment.x_offset + hitSegment.width) - newRightXOffset;
+
+        layer.splice(segmentIndex, 1);
+        
+        if (newLeftWidth > ball.radius) {
+            layer.push({ x_offset: hitSegment.x_offset, width: newLeftWidth });
+        }
+        if (newRightWidth > ball.radius) {
+            layer.push({ x_offset: newRightXOffset, width: newRightWidth });
+        }
+        
+        // --- Ball physics after hit ---
+        let collidePoint = (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
+        let angleRad = collidePoint * (Math.PI / 4);
+        let direction = (paddle === player1) ? -1 : 1;
+        ball.dx = ball.speed * Math.sin(angleRad);
+        ball.dy = direction * ball.speed * Math.cos(angleRad);
+        
+        // --- Apply speed boost if active ---
+        if (ball.activeSpeedBoost) {
+            const topPaddle = (gameMode === 'ai') ? ai : player2;
+            const isHeadingToOpponent = 
+                (ball.activeSpeedBoost === player1 && ball.dy < 0) ||
+                (ball.activeSpeedBoost === topPaddle && ball.dy > 0);
+            
+            if (isHeadingToOpponent) {
+                ball.dx *= 1.5;
+                ball.dy *= 1.5;
+            }
+        }
+        
+        // --- Power-up Spawn Trigger ---
+        if (Math.random() < POWER_UP_CHANCE) {
+            spawnPowerUp(paddle);
+        }
+    }
+    
+    // --- Power-up System ---
+    function spawnPowerUp(spawningPaddle) {
+        const typeKeys = Object.keys(POWER_UP_TYPES);
+        const randomTypeKey = typeKeys[Math.floor(Math.random() * typeKeys.length)];
+        const type = POWER_UP_TYPES[randomTypeKey];
+
+        const powerUp = {
+            x: ball.x,
+            y: ball.y,
+            size: 18,
+            type: type,
+            // Move towards the opposite side
+            dy: (spawningPaddle === player1) ? -2 : 2,
+        };
+        powerUps.push(powerUp);
+    }
+
+    function moveAndCheckPowerUps() {
+        for (let i = powerUps.length - 1; i >= 0; i--) {
+            const p = powerUps[i];
+            p.y += p.dy;
+
+            // Check for collection
+            const topPaddle = (gameMode === 'ai') ? ai : player2;
+            let collectingPaddle = null;
+
+            // If moving up, check for top paddle collision
+            if (p.dy < 0 && p.y - p.size < topPaddle.y + topPaddle.height && p.y + p.size > topPaddle.y) {
+                if (p.x > topPaddle.x && p.x < topPaddle.x + topPaddle.width) {
+                    collectingPaddle = topPaddle;
+                }
+            }
+            // If moving down, check for bottom paddle collision
+            else if (p.dy > 0 && p.y + p.size > player1.y && p.y - p.size < player1.y + player1.height) {
+                if (p.x > player1.x && p.x < player1.x + player1.width) {
+                    collectingPaddle = player1;
+                }
+            }
+
+            if (collectingPaddle) {
+                applyPowerUp(collectingPaddle, p);
+                powerUps.splice(i, 1);
+                synth.triggerAttackRelease("E5", "8n");
+            }
+
+            // Remove if off-screen
+            else if (p.y < -p.size || p.y > GAME_HEIGHT + p.size) {
+                powerUps.splice(i, 1);
+            }
+        }
+    }
+
+    function applyPowerUp(paddle, powerUp) {
+        const topPaddle = (gameMode === 'ai') ? ai : player2;
+        const opponent = (paddle === player1) ? topPaddle : player1;
+        
+        // Clear effect from the paddle that will receive the new one
+        clearActiveEffect(paddle);
+        // If shrinking opponent, clear their effect too to avoid weird states
+        if (powerUp.type.id === 'SHRINK_OPPONENT') {
+            clearActiveEffect(opponent);
+        }
+
+        switch (powerUp.type.id) {
+            case 'EXPAND_SELF':
+                paddle.width = GAME_WIDTH;
+                paddle.x = 0;
+                resetPaddleSegments(paddle);
+                paddle.activeEffect = powerUp.type;
+                paddle.effectTimeoutId = setTimeout(() => {
+                    clearActiveEffect(paddle);
+                }, powerUp.type.duration);
+                break;
+
+            case 'SHRINK_OPPONENT':
+                opponent.width = opponent.originalWidth * 0.5;
+                if (opponent.x + opponent.width > GAME_WIDTH) {
+                    opponent.x = GAME_WIDTH - opponent.width;
+                }
+                resetPaddleSegments(opponent);
+                opponent.activeEffect = powerUp.type;
+                opponent.effectTimeoutId = setTimeout(() => {
+                    clearActiveEffect(opponent);
+                }, powerUp.type.duration);
+                break;
+
+            case 'SPEED_BOOST':
+                if (ball.speedBoostTimeoutId) clearTimeout(ball.speedBoostTimeoutId);
+                ball.activeSpeedBoost = paddle;
+                ball.speedBoostTimeoutId = setTimeout(() => {
+                    ball.activeSpeedBoost = null;
+                }, powerUp.type.duration);
+                break;
+        }
+    }
+
+    function clearActiveEffect(paddle) {
+        if (paddle.effectTimeoutId) {
+            clearTimeout(paddle.effectTimeoutId);
+        }
+        paddle.width = paddle.originalWidth;
+        paddle.activeEffect = null;
+        paddle.effectTimeoutId = null;
+        resetPaddleSegments(paddle);
+    }
+    // --- End of Power-up System ---
+
+    function checkWinner() {
+        if (player1.score >= winningScore) return player1;
+        const topScore = (gameMode === 'ai') ? ai.score : player2.score;
+        if (topScore >= winningScore) return (gameMode === 'ai') ? { name: "AI" } : player2;
+        return null;
+    }
+
+    function endGame(message) {
+        isGameOver = true; // Set game over state
+        cancelAnimationFrame(animationFrameId);
+        messageBox.style.display = 'block';
+        messageBox.querySelector('h2').innerText = message;
+        let finalScore = `Final Score -> P1: ${player1.score} | ${gameMode === 'ai' ? 'AI' : 'P2'}: ${gameMode === 'ai' ? ai.score : player2.score}`;
+        messageBox.querySelector('p').innerText = finalScore;
+        startButton.innerText = 'Play Again';
+        settingsButton.style.display = 'inline-block';
+        homeButton.style.display = 'inline-block';
+    }
+
+    // --- Drawing ---
+    // --- Function to draw the dynamic game background
+    function moveAndDrawGameStars() {
+        ctx.fillStyle = '#1a2a3a'; // Dark blue space background
+        ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        for (const star of gameStars) {
+            star.y += star.speed;
+            if (star.y > GAME_HEIGHT) {
+                star.y = 0;
+                star.x = Math.random() * GAME_WIDTH;
+            }
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function draw() {
+        moveAndDrawGameStars(); // Draw the dynamic background first
+        // Draw Gamified Net
+        const squareSize = 10;
+        const gapSize = 15;
+        const totalBlockSize = squareSize + gapSize;
+        const numSquares = GAME_WIDTH / totalBlockSize;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        for (let i = 0; i < numSquares; i++) {
+            const x = i * totalBlockSize + (gapSize / 2);
+            const y = GAME_HEIGHT / 2 - squareSize / 2;
+            ctx.fillRect(x, y, squareSize, squareSize);
+        }
+        
+        // Draw Objects
+        drawBall();
+        drawPaddle(player1);
+        drawPaddle((gameMode === 'ai') ? ai : player2);
+        drawPowerUps(); // Draw power-ups
+        // Draw Countdown
+        if (isCountdownActive) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.font = '100px "Press Start 2P"';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(countdownValue, GAME_WIDTH / 2, GAME_HEIGHT / 2);
+        }
+    }
+    
+    function drawBall() {
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+
+        // --- Add glow for speed boost ---
+        if (ball.activeSpeedBoost) {
+            ctx.shadowColor = POWER_UP_TYPES.SPEED_BOOST.color;
+            ctx.shadowBlur = 20;
+        }
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        // Reset shadow to avoid affecting other elements
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+    }
+
+    function drawPaddle(paddle) {
+        const LAYER_OFFSET = 4; // How far apart the layers are visually
+        const isBottomPaddle = paddle.y > GAME_HEIGHT / 2;
+        
+        const mainLayerColor = paddle.hitTimer > 0 ? '#ffffff' : paddle.color;
+        const secondLayerColor = paddle.color === '#00ffff' ? '#008b8b' : '#b22222';
+        const yOffset = isBottomPaddle ? -LAYER_OFFSET : LAYER_OFFSET;
+
+        // Draw the back layer (layer 2)
+        ctx.fillStyle = secondLayerColor;
+        for (const seg of paddle.layer2_segments) {
+            ctx.fillRect(paddle.x + seg.x_offset, paddle.y + yOffset, seg.width, paddle.height);
+        }
+        
+        // Draw the front layer (layer 1)
+        ctx.fillStyle = mainLayerColor;
+        for (const seg of paddle.layer1_segments) {
+            ctx.fillRect(paddle.x + seg.x_offset, paddle.y, seg.width, paddle.height);
+        }
+    }
+    
+    // --- Draw Power-ups function ---
+    function drawPowerUps() {
+        powerUps.forEach(p => {
+            ctx.fillStyle = p.type.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+            // Draw an icon
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 12px "Press Start 2P"';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            let icon = '?';
+            if (p.type.id === 'EXPAND_SELF') icon = 'E';
+            if (p.type.id === 'SHRINK_OPPONENT') icon = 'S';
+            if (p.type.id === 'SPEED_BOOST') icon = 'F';
+            ctx.fillText(icon, p.x, p.y + 1);
         });
-    </script>
+    }
+
+    // --- Main Game Loop ---
+    function gameLoop() {
+        if (isCountdownActive) {
+            draw();
+            animationFrameId = requestAnimationFrame(gameLoop);
+            return;
+        }
+        if (player1.hitTimer > 0) player1.hitTimer--;
+        const topPaddle = (gameMode === 'ai') ? ai : player2;
+        if (topPaddle.hitTimer > 0) topPaddle.hitTimer--;
+        
+        // --- Gradual ball speed increase ---
+        if (ball.speed < ball.maxSpeed) {
+            ball.speed += 0.0005; 
+        }
+
+        movePaddles();
+        moveBall();
+        moveAndCheckPowerUps();
+        draw();
+        animationFrameId = requestAnimationFrame(gameLoop);
+    }
+    
+    // --- Event Listeners & Transitions ---
+    function transitionToGame() {
+        Tone.start();
+        document.body.style.overflow = 'hidden';
+        homepageContainer.style.opacity = '0';
+        setTimeout(() => {
+            homepageContainer.style.display = 'none';
+            gameWrapper.style.display = 'flex';
+            resizeCanvas();
+            setTimeout(() => gameWrapper.style.opacity = '1', 50);
+        }, 300);
+    }
+
+    vsAiButton.addEventListener('click', () => {
+        gameMode = 'ai';
+        settingsButton.style.display = 'inline-block';
+        gameDescription.innerText = `First to ${winningScore} wins! AI gets tougher as you score!`;
+        transitionToGame();
+    });
+
+    vsPlayerButton.addEventListener('click', () => {
+        gameMode = 'multiplayer';
+        settingsButton.style.display = 'inline-block';
+        gameDescription.innerText = `First to ${winningScore} wins! Player vs Player!`;
+        transitionToGame();
+    });
+    
+    homeButton.addEventListener('click', () => {
+        gameWrapper.style.opacity = '0';
+        document.body.style.overflow = '';
+        cancelAnimationFrame(animationFrameId);
+        resetPaddles();
+        updateScores();
+        startButton.innerText = 'Start Game';
+        messageBox.querySelector('h2').innerText = 'Sacrificial Ping Pong';
+        setTimeout(() => {
+            gameWrapper.style.display = 'none';
+            homepageContainer.style.display = 'flex';
+            setTimeout(() => homepageContainer.style.opacity = '1', 50);
+        }, 300);
+    });
+
+    startButton.addEventListener('click', () => {
+        homeButton.style.display = 'none';
+        init();
+    });
+
+    function updateSettingsVisibility() {
+        if (gameMode === 'ai') {
+            aiSettingsRow.style.display = 'grid';
+        } else {
+            aiSettingsRow.style.display = 'none';
+        }
+    }
+
+    settingsButton.addEventListener('click', () => {
+        messageBox.style.display = 'none';
+        settingsBox.style.display = 'block';
+        updateSettingsVisibility();
+    });
+
+    saveSettingsButton.addEventListener('click', () => {
+        winningScore = parseInt(winningScoreInput.value);
+        const difficultyValue = parseInt(aiDifficultyInput.value);
+        ai.initialError = 0.55 - (difficultyValue * 0.05);
+
+        const speedValue = parseInt(ballSpeedInput.value);
+        ball.baseSpeed = 2.5 + (speedValue - 1) * 0.5; // Map 1-10 to 2.5-7
+        resetBall();
+
+        gameDescription.innerText = `First to ${winningScore} wins! Both paddles split on hit. AI gets tougher as you score!`;
+        settingsBox.style.display = 'none';
+        messageBox.style.display = 'block';
+    });
+
+    winningScoreInput.addEventListener('input', (e) => winningScoreValue.textContent = e.target.value);
+    aiDifficultyInput.addEventListener('input', (e) => aiDifficultyValue.textContent = e.target.value);
+    ballSpeedInput.addEventListener('input', (e) => ballSpeedValue.textContent = e.target.value);
+    
+    window.addEventListener('resize', () => {
+        if (gameWrapper.style.display === 'flex') resizeCanvas();
+    });
+    
+    // --- Initial setup ---
+    resetPaddles();
+    
+    // --- Function to generate twinkling stars ---
+    function createStars() {
+        const container = document.getElementById('stars-background');
+        if (!container) return;
+        const starCount = 250; // More stars for a fuller look
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+
+            const size = Math.random() * 2 + 1; // Star size between 1px and 3px
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.left = `${Math.random() * 100}%`;
+
+            const duration = Math.random() * 4 + 2; // Animation duration between 2s and 6s
+            const delay = Math.random() * 6;      // Animation delay up to 6s
+
+            star.style.animationDuration = `${duration}s`;
+            star.style.animationDelay = `${delay}s`;
+
+            container.appendChild(star);
+        }
+    }
+    
+    // Call the function to create stars on page load
+    createStars();
+
+</script>
+
 </body>
 </html>
+

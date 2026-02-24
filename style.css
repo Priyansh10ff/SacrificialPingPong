@@ -1,0 +1,317 @@
+body {
+    font-family: 'Press Start 2P', cursive;
+    color: #ffffff;
+    margin: 0;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#stars-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-color: #1a1a1a;
+    overflow: hidden;
+}
+
+.star {
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+    animation: twinkle linear infinite;
+    box-shadow: 0 0 4px #fff, 0 0 8px #fff, 0 0 12px #00ffff;
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+.page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    min-height: 100vh;
+    box-sizing: border-box;
+    text-align: center;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#homepage-container {
+    flex-direction: column;
+    padding: 2rem;
+    position: relative;
+}
+
+.homepage-title {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff, 0 0 25px #00ffff, 0 0 40px #ff4757;
+    margin-bottom: 1rem;
+    animation: flicker 2s infinite alternate;
+}
+
+.homepage-tagline {
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 3rem;
+    letter-spacing: 2px;
+}
+
+.audio-hint {
+    font-size: 0.75rem;
+    color: #ffd700;
+    margin-bottom: 2.5rem;
+    letter-spacing: 1px;
+    opacity: 0.9;
+    animation: pulse 3s infinite;
+}
+
+.info-boxes-container {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 3rem;
+    padding: 0 1rem;
+}
+
+.instructions-box {
+    border: 2px solid #465a70;
+    padding: 1.5rem 2rem;
+    border-radius: 1rem;
+    max-width: 600px;
+    background-color: rgba(0,0,0,0.3);
+    text-align: left;
+}
+
+.info-boxes-container .instructions-box {
+    flex-basis: 300px;
+    flex-grow: 1;
+    max-width: 340px;
+    opacity: 0; 
+    animation: fadeInBottom 0.7s ease-out forwards;
+}
+
+.instructions-box h3 {
+    color: #00ffff;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.instructions-box p {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.8;
+    font-size: 0.8rem;
+}
+
+.key-style {
+    background-color: #465a70;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    border-bottom: 2px solid #2c3e50;
+    color: #ffffff;
+    font-size: 0.7rem;
+}
+
+.about-us {
+    padding-top: 4rem;
+    padding-bottom: 1rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 1px;
+    opacity: 0;
+    animation: fadeInBottom 0.7s ease-out forwards;
+    animation-delay: 0.8s;
+}
+
+@keyframes flicker {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        text-shadow: 0 0 8px #00ffff, 0 0 20px #00ffff, 0 0 35px #ff4757;
+    }
+    20%, 24%, 55% {
+        text-shadow: none;
+    }
+}
+
+@keyframes fadeInBottom {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.info-boxes-container .instructions-box:nth-child(1) { animation-delay: 0.2s; }
+.info-boxes-container .instructions-box:nth-child(2) { animation-delay: 0.4s; }
+.info-boxes-container .instructions-box:nth-child(3) { animation-delay: 0.6s; }
+
+.game-wrapper {
+    position: relative;
+    height: 100vh;
+}
+
+canvas {
+    display: block;
+    border-radius: 1rem;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+    image-rendering: -moz-crisp-edges;
+    image-rendering: pixelated;
+}
+
+.game-container {
+    position: relative;
+    line-height: 0;
+}
+
+.score-board {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+#scoreBottom, #scoreTop {
+    position: absolute;
+    font-size: 3rem;
+}
+
+#scoreBottom {
+    color: rgba(0, 255, 255, 0.4); 
+    top: 50%;
+    right: 2rem;
+    margin-top: 1rem; 
+}
+
+#scoreTop {
+    color: rgba(255, 71, 87, 0.4);
+    bottom: 50%;
+    left: 2rem;
+    margin-bottom: 1rem;
+}
+
+.score-pop {
+    animation: score-pop-animation 0.4s ease-out;
+}
+
+@keyframes score-pop-animation {
+    0% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.5); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.menu-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 2rem 3rem;
+    border-radius: 1rem;
+    text-align: center;
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    width: 90%;
+    max-width: 500px;
+}
+
+.menu-box h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #00ffff;
+    line-height: 1.2;
+}
+
+.menu-box p {
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    max-width: 400px;
+    line-height: 1.6;
+    margin-left: auto;
+    margin-right: auto;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+button {
+    font-family: 'Press Start 2P', cursive;
+    background-color: #00ffff;
+    color: #1a1a1a;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 5px #00b3b3;
+    font-size: 1rem;
+    margin: 0.5rem;
+}
+
+button:hover {
+    background-color: #33ffff;
+    transform: translateY(-2px);
+    box-shadow: 0 7px #00b3b3;
+}
+
+button:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px #00b3b3;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.settings-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    .page-wrapper {
+        align-items: flex-start;
+        padding-top: 4rem;
+    }
+    .homepage-title {
+        font-size: clamp(2rem, 12vw, 3rem);
+    }
+    .menu-box {
+        padding: 1.5rem;
+    }
+    .menu-box h2 {
+        font-size: 1.8rem;
+    }
+    .menu-box p {
+        font-size: 0.8rem;
+    }
+    button {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    #homepage-container {
+            padding: 1rem;
+    }
+}
